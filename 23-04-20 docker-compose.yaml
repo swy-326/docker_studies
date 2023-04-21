@@ -1,0 +1,25 @@
+version: "3.9" # 이유는 모르겠으나 항상 이거 쓰라고 함
+
+# 웬만하면 string으로 넘기기
+services:
+  foobar: # nome host do servico 내가 지정함, 중요한 건 밑 이미지
+    image: "node:16" # 가장 중요한 애 
+    ports: # s니까 리스트여야함
+      - "3000:3000" # host:container
+    volumes:
+      - "$PWD:/opt/app" # mapeia os arquivos da minha maquina para essa pasta no container
+    working_dir: "/opt/app" # onde vou rodar os codigos
+    entrypoint: /bin/bash
+    stdin_open: true # essas duas linhas para -ti
+    tty: true # essas duas linhas para -ti
+    # entrypoint, stdin_open, tty 없으면 이거 밑에 쓰기!
+    #command: "yarn start" # bash를 써도 되는데 그러면 iterative로 들어가야됨 귀찮음
+    # 여러 커맨드 돌리고 싶으면 yarn && yarn start - '&&' 쓰기
+    # 대체적으로 yarn은 한 번만 있음 되니까 local 에 두기 
+  chaves: # 새로운 컨테이너
+    image: "redis" # nn eh boa pratica, nunca coloque tag latest!!! ai nn tem motivo pra usar docker
+    # 'ports:' nn precisa expor porta para host pq o servico do node q vai conectar
+    # host -> foobar -> chaves
+    # cada container tem sua ip, qual a rede? rede propria do docker
+    # se eu precisar mockar algo na redis, preciso eu acessar. entao nesse caso precisa abrir porta
+    # para volumar nn precisa da porta, so cria volume (redis eh pra ficar na memoria)
